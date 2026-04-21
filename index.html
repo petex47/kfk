@@ -336,13 +336,26 @@ html[data-theme="light"] .macros .macro b{color:#9a7800}
   .step{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
   .step:nth-child(2n){border-right:none}
   .twocol{grid-template-columns:1fr}
-  .nav{padding:14px 18px;gap:14px}
-  .nav-links{gap:14px}
-  .nav-links a:not(.order-now):not(.theme-label){display:none}
+  .nav{padding:12px 16px;gap:10px;flex-wrap:nowrap}
+  .nav-links{gap:8px}
+  .nav-links a:not(.order-now){display:none}
   .hero{padding:40px 18px 32px}
   .section-label::before{left:18px}
   .section-label::after{right:18px}
   .menu-preview,.packs,.steps,.twocol{padding-left:18px;padding-right:18px}
+}
+@media(max-width:640px){
+  /* slim nav: brand + icon toggle + order btn only */
+  .nav{padding:10px 14px;gap:8px}
+  .brand{font-size:13px}
+  .nav-links{gap:6px;margin-left:auto}
+  /* hide text labels on toggle, show only icons */
+  .theme-toggle button span.label{display:none}
+  .theme-toggle button{padding:6px 8px}
+  .order-now{padding:7px 11px;font-size:11px;white-space:nowrap}
+  /* hero */
+  .hero{padding:32px 14px 28px;overflow:hidden}
+  .hero h1{font-size:clamp(38px,11vw,56px)}
 }
 @media(max-width:560px){
   .packs,.menu-grid{grid-template-columns:1fr}
@@ -370,11 +383,11 @@ html[data-theme="light"] .macros .macro b{color:#9a7800}
     <div class="theme-toggle" id="themeToggle" role="group" aria-label="Theme">
       <button data-theme-btn="light" aria-label="Light">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-        LIGHT
+        <span class="label">LIGHT</span>
       </button>
       <button data-theme-btn="dark" aria-label="Dark">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        DARK
+        <span class="label">DARK</span>
       </button>
     </div>
     <a href="#order" class="order-now">ORDER NOW →</a>
