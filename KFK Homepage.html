@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KFK — Kaizen Fuel Kitchen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --yellow:#FFD60A;
+  --yellow-ink:#2a1f00;
+  --red:#ff3b30;
+}
+html[data-theme="dark"]{
+  --bg:#000000;
+  --bg-elev:#0a0a0a;
+  --card:#0e0e0e;
+  --ink:#ffffff;
+  --ink-dim:#a9a9a9;
+  --ink-faint:#6b6b6b;
+  --rule:#1f1f1f;
+  --rule-strong:#2a2a2a;
+  --chip:#1a1a1a;
+}
+html[data-theme="light"]{
+  --bg:#FAFAF7;
+  --bg-elev:#ffffff;
+  --card:#0a0a0a;           /* inverted cards in light mode pull from dark ref */
+  --ink:#0a0a0a;
+  --ink-dim:#3a3a3a;
+  --ink-faint:#6b6b6b;
+  --rule:#e7e5de;
+  --rule-strong:#cfcdc4;
+  --chip:#efece3;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+body{transition:background .35s ease,color .35s ease}
+a{color:inherit;text-decoration:none}
+
+/* URGENCY BANNER */
+.banner{
+  background:#000;color:var(--yellow);
+  font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;
+  text-align:center;padding:11px 16px;letter-spacing:.02em;
+  border-bottom:1px solid #000;
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  overflow:hidden;
+}
+.banner-track{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  min-height:1.1em;min-width:min(70vw,640px);
+}
+.banner-msg{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateY(8px);
+  opacity:0;white-space:nowrap;
+  transition:opacity .45s ease, transform .45s ease;
+}
+.banner-msg.is-on{opacity:1;transform:translate(-50%,-50%) translateY(0)}
+.banner-msg.is-out{opacity:0;transform:translate(-50%,-50%) translateY(-8px)}
+@media(max-width:560px){
+  .banner{font-size:11.5px;gap:10px;padding:10px 12px}
+  .banner-track{min-width:68vw}
+  .banner-msg{white-space:normal;text-align:center;line-height:1.3}
+}
+html[data-theme="light"] .banner{background:#0a0a0a}
+.banner .pulse{display:inline-block;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* NAV */
+.nav{
+  border-bottom:1px solid var(--rule);
+  padding:18px 28px;
+  display:flex;align-items:center;gap:28px;
+  position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);
+  background:color-mix(in oklab, var(--bg) 85%, transparent);
+}
+.brand{
+  font-family:'Inter',sans-serif;font-weight:900;font-size:15px;letter-spacing:.04em;
+  display:flex;align-items:center;gap:2px;
+}
+.brand .fuel{background:var(--yellow);color:#000;padding:1px 6px;margin:0 4px}
+.nav-links{margin-left:auto;display:flex;align-items:center;gap:28px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
+.nav-links a{color:var(--ink-dim);transition:color .15s}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a.active{color:var(--ink)}
+.order-now{background:var(--yellow);color:#000;padding:8px 14px;font-weight:700}
+.order-now:hover{color:#000;background:#ffe03a}
+
+/* THEME TOGGLE */
+.theme-toggle{
+  display:inline-flex;align-items:center;gap:0;
+  border:1px solid var(--rule-strong);border-radius:999px;
+  padding:3px;background:var(--bg-elev);
+  cursor:pointer;
+}
+.theme-toggle button{
+  all:unset;cursor:pointer;padding:5px 9px;border-radius:999px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.06em;
+  color:var(--ink-faint);display:inline-flex;align-items:center;gap:5px;
+  transition:background .2s,color .2s;
+}
+.theme-toggle button.on{background:var(--ink);color:var(--bg)}
+.theme-toggle svg{width:12px;height:12px}
+
+/* HERO */
+.hero{padding:64px 28px 48px;max-width:1160px;margin:0 auto}
+.hero-eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink-faint);
+  display:flex;align-items:center;gap:12px;margin-bottom:28px;
+}
+.hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 4px color-mix(in oklab,var(--yellow) 25%,transparent)}
+.hero h1{
+  font-family:'Inter',sans-serif;font-weight:900;
+  font-size:clamp(44px,7vw,96px);line-height:.95;letter-spacing:-.035em;
+  margin:0 0 28px;text-wrap:balance;
+}
+.hero h1 .hl{background:var(--yellow);color:#000;padding:0 .12em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.hero h1 .italic{font-style:italic;font-weight:800}
+.hero .sub{
+  font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.6;
+  color:var(--ink-dim);max-width:620px;margin:0 0 12px;text-transform:uppercase;letter-spacing:.04em;
+}
+.hero .sub b{color:var(--ink);font-weight:600}
+.mantra{
+  font-family:'JetBrains Mono',monospace;font-style:italic;font-weight:500;
+  font-size:15px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink);margin-top:24px;
+}
+.mantra div{margin-bottom:6px}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px}
+.btn{
+  font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;letter-spacing:.04em;
+  padding:16px 22px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:10px;
+  transition:transform .15s ease,background .2s,color .2s,border-color .2s;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:#0a0a0a;color:var(--yellow);border-color:#0a0a0a}
+html[data-theme="light"] .btn-primary{background:#0a0a0a;color:var(--yellow)}
+.btn-secondary{background:transparent;color:var(--ink);border-color:var(--rule-strong)}
+.btn-secondary:hover{border-color:var(--ink)}
+.btn-ghost{background:transparent;color:var(--ink-dim);border-color:transparent;padding:16px 0}
+.btn-ghost:hover{color:var(--ink)}
+
+/* SECTION LABEL */
+.section-label{
+  text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--ink-faint);position:relative;padding:40px 0 24px;
+}
+.section-label::before, .section-label::after{
+  content:"";position:absolute;top:50%;height:1px;width:calc(50% - 80px);background:var(--rule);
+}
+.section-label::before{left:28px}
+.section-label::after{right:28px}
+
+/* SECTION HEADING */
+.sec-heading{
+  font-family:'Inter',sans-serif;font-weight:900;
+  font-size:clamp(38px,5vw,64px);line-height:1;letter-spacing:-.03em;
+  text-align:center;margin:0 0 12px;
+}
+.sec-heading .accent{color:var(--yellow)}
+.sec-sub{
+  font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--ink-dim);text-align:center;max-width:640px;margin:0 auto 40px;
+}
+
+/* PACK CARDS */
+.packs{max-width:1160px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.pack{
+  background:var(--card);color:#fff;
+  border:1px solid transparent;padding:28px 22px;position:relative;
+  transition:border-color .2s,transform .2s;cursor:pointer;
+}
+.pack:hover{border-color:var(--yellow);transform:translateY(-3px)}
+.pack.popular{border-color:var(--yellow)}
+.pack.popular::before{
+  content:"MOST POPULAR";position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  background:var(--yellow);color:#000;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.12em;
+  padding:4px 10px;
+}
+.pack .name{font-family:'Inter',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em}
+.pack .meals{font-family:'JetBrains Mono',monospace;font-size:12px;color:#a9a9a9;margin:6px 0 18px;letter-spacing:.06em}
+.pack .price{font-family:'Inter',sans-serif;font-weight:900;font-size:44px;letter-spacing:-.03em;color:var(--yellow);line-height:1}
+.pack .per{font-family:'JetBrains Mono',monospace;font-size:11px;color:#6b6b6b;margin-top:6px;letter-spacing:.04em}
+.pack .freeship{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:#0a0a0a;background:var(--yellow);
+  display:inline-block;margin-top:14px;padding:3px 7px;font-weight:700;letter-spacing:.08em;
+}
+
+/* STEPS */
+.steps{max-width:1160px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.step{padding:32px 24px;border-right:1px solid var(--rule)}
+.step:last-child{border-right:none}
+.step .num{font-family:'Inter',sans-serif;font-weight:900;font-size:72px;line-height:.85;letter-spacing:-.04em;color:var(--yellow);margin-bottom:18px}
+.step h3{font-family:'Inter',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.01em;margin:0 0 12px}
+.step p{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.6;color:var(--ink-dim);margin:0}
+
+/* TWO COL (is this for me + trusted) */
+.twocol{max-width:1160px;margin:48px auto 0;padding:0 28px;display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:start}
+.forme h3, .trust h3{
+  font-family:'Inter',sans-serif;font-weight:900;font-size:28px;letter-spacing:-.02em;margin:0 0 20px;
+}
+.forme ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.forme li{font-family:'JetBrains Mono',monospace;font-size:13.5px;color:var(--ink);display:flex;gap:12px;align-items:flex-start;line-height:1.5}
+.forme li::before{content:"✓";color:var(--yellow);font-weight:700;font-size:14px;margin-top:1px}
+.trust{background:var(--card);color:#fff;padding:32px 28px;position:relative}
+html[data-theme="light"] .trust{color:#fff}
+.trust .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a9a9a9;margin-bottom:12px}
+.trust h3{font-size:36px;line-height:1;color:#fff}
+.trust h3 .accent{color:var(--yellow)}
+.trust p{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;color:#d0d0d0;margin:0 0 20px}
+.trust .btn-primary{background:var(--yellow);color:#0a0a0a;border-color:var(--yellow)}
+
+/* MENU PREVIEW */
+.menu-preview{max-width:1160px;margin:0 auto;padding:0 28px}
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.meal{
+  background:var(--bg-elev);border:1px solid var(--rule);padding:0;overflow:hidden;
+  transition:border-color .2s,transform .2s;
+}
+.meal:hover{border-color:var(--yellow);transform:translateY(-2px)}
+.meal .img{aspect-ratio:4/3;background:
+  repeating-linear-gradient(45deg, var(--rule) 0 1px, transparent 1px 12px),
+  var(--chip);
+  display:flex;align-items:flex-end;justify-content:flex-start;padding:14px;
+}
+.meal .img span{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--ink-faint);text-transform:uppercase;background:var(--bg-elev);padding:3px 6px;border:1px solid var(--rule)}
+.meal .body{padding:18px}
+.meal .name{font-family:'Inter',sans-serif;font-weight:800;font-size:17px;letter-spacing:-.01em;margin:0 0 4px}
+.meal .desc{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--ink-dim);line-height:1.5;margin:0 0 14px}
+.meal .macros{display:flex;gap:6px;flex-wrap:wrap}
+.macros .macro{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;padding:3px 7px;background:var(--chip);color:var(--ink);border:1px solid var(--rule)}
+.macros .macro b{color:var(--yellow);font-weight:700}
+html[data-theme="light"] .macros .macro b{color:#9a7800}
+
+/* INSTAGRAM GALLERY */
+.ig-wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+.ig-head{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  padding:18px 0 28px;
+  font-family:'JetBrains Mono',monospace;font-weight:700;
+  font-size:clamp(14px,1.6vw,18px);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink);
+}
+.ig-head .flame{filter:grayscale(0);font-size:1.2em}
+.ig-head a.handle{color:var(--ink);border-bottom:2px solid var(--yellow);padding-bottom:2px;transition:color .15s}
+.ig-head a.handle:hover{color:var(--yellow)}
+.ig-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+}
+.ig-tile{
+  position:relative;aspect-ratio:1/1;overflow:hidden;
+  background:var(--chip);cursor:pointer;
+  border:1px solid var(--rule);
+}
+.ig-tile .ph{
+  position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0 1px, transparent 1px 14px),
+    linear-gradient(135deg, var(--tile-a,#2a2a28), var(--tile-b,#111));
+  display:flex;align-items:flex-end;padding:10px;
+}
+.ig-tile .tag{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;
+  color:#fff;background:rgba(0,0,0,.55);padding:3px 6px;border:1px solid rgba(255,255,255,.18);
+  text-transform:uppercase;
+}
+.ig-tile .overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.55);
+  opacity:0;transition:opacity .2s;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+}
+.ig-tile:hover .overlay{opacity:1}
+.ig-tile .ig-icon{width:22px;height:22px;stroke:var(--yellow);fill:none;stroke-width:2}
+.ig-cta{
+  display:flex;justify-content:center;padding:28px 0 0;
+}
+.ig-cta a{
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink);border:1px solid var(--rule-strong);padding:12px 18px;transition:border-color .2s,color .2s;
+}
+.ig-cta a:hover{border-color:var(--yellow);color:var(--yellow)}
+@media(max-width:900px){
+  .ig-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+  .ig-wrap{padding:0 18px}
+}
+@media(max-width:560px){
+  .ig-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* FOOTER */
+.footer{
+  margin-top:80px;border-top:1px solid var(--rule);
+  padding:28px;display:flex;align-items:center;gap:20px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-faint);
+}
+.footer .spacer{flex:1}
+.footer a{color:var(--ink-dim)}
+.footer a:hover{color:var(--ink)}
+
+/* TWEAKS PANEL */
+.tweaks{
+  position:fixed;right:20px;bottom:20px;z-index:80;
+  background:var(--bg-elev);border:1px solid var(--rule-strong);
+  padding:16px;width:260px;font-family:'JetBrains Mono',monospace;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+  display:none;
+}
+.tweaks.open{display:block}
+.tweaks h4{margin:0 0 12px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;display:flex;align-items:center;gap:8px}
+.tweaks h4::before{content:"";width:6px;height:6px;background:var(--yellow);border-radius:50%}
+.tweaks .row{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.tweaks label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim)}
+.tweaks select,.tweaks input[type=text]{
+  all:unset;font-family:'JetBrains Mono',monospace;font-size:12px;
+  border:1px solid var(--rule-strong);padding:6px 8px;color:var(--ink);background:var(--bg);
+}
+.tweaks .seg{display:flex;gap:4px}
+.tweaks .seg button{
+  all:unset;cursor:pointer;flex:1;text-align:center;padding:6px;font-size:10.5px;letter-spacing:.08em;
+  border:1px solid var(--rule-strong);color:var(--ink-dim);
+}
+.tweaks .seg button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* MOBILE */
+@media(max-width:900px){
+  .packs,.steps,.menu-grid{grid-template-columns:1fr 1fr}
+  .step{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .step:nth-child(2n){border-right:none}
+  .twocol{grid-template-columns:1fr}
+  .nav{padding:14px 18px;gap:14px}
+  .nav-links{gap:14px}
+  .nav-links a:not(.order-now):not(.theme-label){display:none}
+  .hero{padding:40px 18px 32px}
+  .section-label::before{left:18px}
+  .section-label::after{right:18px}
+  .menu-preview,.packs,.steps,.twocol{padding-left:18px;padding-right:18px}
+}
+@media(max-width:560px){
+  .packs,.menu-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .step{border-right:none}
+}
+</style>
+</head>
+<body data-screen-label="01 Home">
+
+<!-- urgency banner / rotating ticker -->
+<div class="banner" id="banner" aria-live="polite">
+  <span class="pulse">●</span>
+  <span class="banner-track" id="bannerTrack"><span class="banner-msg is-on" data-i="0">ORDERS CLOSE FRIDAY @ 8PM</span></span>
+  <span class="pulse">●</span>
+</div>
+
+<!-- nav -->
+<nav class="nav">
+  <a href="#" class="brand">KAIZEN<span class="fuel">FUEL</span>KITCHEN</a>
+  <div class="nav-links">
+    <a href="#menu">Menu</a>
+    <a href="#how">How It Works</a>
+    <a href="#orders">My Orders</a>
+    <div class="theme-toggle" id="themeToggle" role="group" aria-label="Theme">
+      <button data-theme-btn="light" aria-label="Light">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        LIGHT
+      </button>
+      <button data-theme-btn="dark" aria-label="Dark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        DARK
+      </button>
+    </div>
+    <a href="#order" class="order-now">ORDER NOW →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-eyebrow"><span class="dot"></span> SAN ANTONIO MEAL PREP · WEEK OF APR 20</div>
+  <h1>
+    Performance Meals.<br>
+    Built for <span class="hl">Athletes</span> <span class="italic">+ Busy People.</span>
+  </h1>
+  <p class="sub">FRESH READY-TO-EAT <b>CLEAN MACRO MEALS</b> BUILT FOR TRAINING, WORK, AND REAL LIFE.</p>
+  <p class="sub">FREE PICKUP OR <b>+$10 DELIVERY</b> EVERY SUNDAY · FREE DELIVERY ON 15+ MEAL PACKS</p>
+  <div class="mantra">
+    <div><i>Stay fueled. Stay disciplined. Stay Kaizen.</i></div>
+    <div><i>Fueling those who refuse to stay the same.</i></div>
+  </div>
+  <div class="hero-cta">
+    <a href="#packs" class="btn btn-primary">ORDER NOW →</a>
+    <a href="#how" class="btn btn-secondary">HOW IT WORKS</a>
+    <a href="https://testimonial.to/kaizen-fuel-kitchen/all" target="_blank" rel="noopener" class="btn btn-ghost">VIEW TESTIMONIALS →</a>
+  </div>
+</section>
+
+<!-- PACKS -->
+<div class="section-label" id="packs">MEAL PACKS</div>
+<h2 class="sec-heading">CHOOSE YOUR <span class="accent">PACK</span></h2>
+<p class="sec-sub">Pick the weekly fuel that fits your training volume and lifestyle.</p>
+<div class="packs" id="packGrid">
+  <div class="pack" data-pack="starter">
+    <div class="name">Starter</div>
+    <div class="meals">5 MEALS</div>
+    <div class="price">$50</div>
+    <div class="per">$10.00 / MEAL</div>
+  </div>
+  <div class="pack popular" data-pack="consistency">
+    <div class="name">Consistency</div>
+    <div class="meals">10 MEALS</div>
+    <div class="price">$100</div>
+    <div class="per">$10.00 / MEAL</div>
+  </div>
+  <div class="pack" data-pack="athlete">
+    <div class="name">Athlete</div>
+    <div class="meals">15 MEALS</div>
+    <div class="price">$135</div>
+    <div class="per">$9.00 / MEAL</div>
+    <div class="freeship">+ FREE DELIVERY</div>
+  </div>
+  <div class="pack" data-pack="bulk">
+    <div class="name">Bulk</div>
+    <div class="meals">20 MEALS</div>
+    <div class="price">$185</div>
+    <div class="per">$9.25 / MEAL</div>
+    <div class="freeship">+ FREE DELIVERY</div>
+  </div>
+</div>
+
+<!-- STEPS -->
+<div class="section-label" id="how">HOW IT WORKS</div>
+<h2 class="sec-heading">FOUR SIMPLE <span class="accent">STEPS</span></h2>
+<p class="sec-sub">From order to plate in minutes, every week.</p>
+<div class="steps">
+  <div class="step"><div class="num">01</div><h3>Choose Your Pack</h3><p>Pick from 5, 10, 15, or 20 meals. Go with Chef's Choice or customize your own selection.</p></div>
+  <div class="step"><div class="num">02</div><h3>We Cook Fresh</h3><p>Every meal is prepared fresh each week. Macro-balanced for performance and recovery.</p></div>
+  <div class="step"><div class="num">03</div><h3>Pick Up or Delivery</h3><p>Grab at our SA pickup spot, or get them delivered to your door Sunday evening.</p></div>
+  <div class="step"><div class="num">04</div><h3>Heat, Eat, Perform</h3><p>Each meal heats up in minutes. Consistent protein, zero thinking. Just fuel and go.</p></div>
+</div>
+
+<!-- FOR ME + TRUST -->
+<div class="twocol">
+  <div class="forme">
+    <h3>Is this for me?</h3>
+    <ul>
+      <li>You train 3–6× per week</li>
+      <li>You're too busy to meal prep</li>
+      <li>You want consistent protein every day</li>
+      <li>You're tired of cooking the same things</li>
+      <li>You want macro-tracked meals without the guesswork</li>
+    </ul>
+  </div>
+  <div class="trust" id="testimonials">
+    <div class="eyebrow">TRUSTED BY</div>
+    <h3>100+ SAN ANTONIO <span class="accent">ATHLETES</span></h3>
+    <p>From CrossFit boxes to BJJ gyms, weekend warriors to competitive athletes. KFK keeps San Antonio fueled.</p>
+    <a href="#packs" class="btn btn-primary">ORDER NOW →</a>
+  </div>
+</div>
+
+<!-- MENU PREVIEW -->
+<div class="section-label" id="menu">THIS WEEK'S MENU · APR 20</div>
+<h2 class="sec-heading">FRESH <span class="accent">EVERY WEEK</span></h2>
+<p class="sec-sub">Six rotating meals. All high-protein, macro-balanced, ready in minutes.</p>
+<div class="menu-preview">
+  <div class="menu-grid" id="menuGrid"></div>
+</div>
+
+<!-- INSTAGRAM GALLERY -->
+<div class="section-label" id="instagram">@KAIZENFUELKITCHEN</div>
+<div class="ig-head">
+  <span class="flame">🔥</span>
+  <span>FOLLOW US</span>
+  <a class="handle" href="https://instagram.com/kaizenfuelkitchen" target="_blank" rel="noopener">@kaizenfuelkitchen</a>
+  <span>ON INSTAGRAM</span>
+  <span class="flame">🔥</span>
+</div>
+<div class="ig-wrap">
+  <div class="ig-grid" id="igGrid"></div>
+  <div class="ig-cta"><a href="https://instagram.com/kaizenfuelkitchen" target="_blank" rel="noopener">VIEW MORE ON INSTAGRAM →</a></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div>© KAIZEN FUEL KITCHEN · SAN ANTONIO, TX</div>
+  <div class="spacer"></div>
+  <a href="#">Menu</a>
+  <a href="#">Instagram</a>
+  <a href="#">Contact</a>
+</footer>
+
+<!-- TWEAKS -->
+<div class="tweaks" id="tweaks">
+  <h4>Tweaks</h4>
+  <div class="row">
+    <label>Accent color</label>
+    <div class="seg" id="accentSeg">
+      <button data-accent="#FFD60A" class="on">YELLOW</button>
+      <button data-accent="#FF6B00">ORANGE</button>
+      <button data-accent="#39FF14">LIME</button>
+    </div>
+  </div>
+  <div class="row">
+    <label>Banner message</label>
+    <input type="text" id="bannerMsg" value="ORDERS CLOSE FRIDAY @ 8PM">
+  </div>
+  <div class="row">
+    <label>Hero headline style</label>
+    <div class="seg" id="heroSeg">
+      <button data-hero="mixed" class="on">MIXED</button>
+      <button data-hero="bold">BOLD</button>
+      <button data-hero="mono">MONO</button>
+    </div>
+  </div>
+  <div class="row">
+    <label>Popular pack</label>
+    <div class="seg" id="popSeg">
+      <button data-pop="starter">5</button>
+      <button data-pop="consistency" class="on">10</button>
+      <button data-pop="athlete">15</button>
+      <button data-pop="bulk">20</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============= TWEAK DEFAULTS =============
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "dark",
+  "accent": "#FFD60A",
+  "banner": "ORDERS CLOSE FRIDAY @ 8PM",
+  "hero": "mixed",
+  "popular": "athlete"
+}/*EDITMODE-END*/;
+
+const state = { ...TWEAK_DEFAULTS };
+
+// ============= THEME =============
+function setTheme(t){
+  state.theme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  document.querySelectorAll('#themeToggle button').forEach(b=>{
+    b.classList.toggle('on', b.dataset.themeBtn===t);
+  });
+  try { localStorage.setItem('kfk-theme', t); } catch(e){}
+}
+document.querySelectorAll('#themeToggle button').forEach(b=>{
+  b.addEventListener('click', ()=> setTheme(b.dataset.themeBtn));
+});
+// init theme: localStorage > default
+try {
+  const saved = localStorage.getItem('kfk-theme');
+  setTheme(saved || TWEAK_DEFAULTS.theme);
+} catch(e){ setTheme(TWEAK_DEFAULTS.theme); }
+
+// ============= ACCENT =============
+function setAccent(hex){
+  state.accent = hex;
+  document.documentElement.style.setProperty('--yellow', hex);
+  document.querySelectorAll('#accentSeg button').forEach(b=> b.classList.toggle('on', b.dataset.accent===hex));
+}
+
+// ============= ROTATING BANNER =============
+const BANNER_MESSAGES = [
+  "ORDERS CLOSE FRIDAY @ 8PM",
+  "$10 FLAT-RATE DELIVERY · FREE PICKUP @ GOLD'S GYM QUARRY · SUN 6–8PM"
+];
+let bannerIdx = 0;
+let bannerTimer = null;
+function renderBannerMessage(i){
+  const track = document.getElementById('bannerTrack');
+  if(!track) return;
+  const current = track.querySelector('.banner-msg.is-on');
+  const next = document.createElement('span');
+  next.className = 'banner-msg';
+  next.dataset.i = String(i);
+  next.textContent = BANNER_MESSAGES[i];
+  track.appendChild(next);
+  // force reflow so transition runs
+  void next.offsetWidth;
+  next.classList.add('is-on');
+  if(current){
+    current.classList.remove('is-on');
+    current.classList.add('is-out');
+    setTimeout(()=> current.remove(), 500);
+  }
+}
+function startBannerRotation(){
+  if(bannerTimer) clearInterval(bannerTimer);
+  bannerTimer = setInterval(()=>{
+    bannerIdx = (bannerIdx + 1) % BANNER_MESSAGES.length;
+    renderBannerMessage(bannerIdx);
+  }, 4200);
+}
+// setBanner now edits the FIRST message and re-renders
+function setBanner(msg){
+  state.banner = msg;
+  BANNER_MESSAGES[0] = msg;
+  // if currently showing idx 0, refresh its text in place
+  const shown = document.querySelector('.banner-msg.is-on');
+  if(shown && shown.dataset.i === '0'){ shown.textContent = msg; }
+}
+
+// ============= HERO STYLE =============
+function setHero(style){
+  state.hero = style;
+  const h1 = document.querySelector('.hero h1');
+  if(style==='bold'){
+    h1.innerHTML = `Performance Meals.<br>Built for Athletes + Busy People.`;
+  } else if(style==='mono'){
+    h1.style.fontFamily = "'JetBrains Mono',monospace";
+    h1.style.fontWeight = '700';
+    h1.innerHTML = `Performance meals.<br>Built for athletes<br>+ busy people.`;
+    document.querySelectorAll('#heroSeg button').forEach(b=> b.classList.toggle('on', b.dataset.hero===style));
+    return;
+  } else {
+    h1.innerHTML = `Performance Meals.<br>Built for <span class="hl">Athletes</span> <span class="italic">+ Busy People.</span>`;
+  }
+  h1.style.fontFamily = "'Inter',sans-serif";
+  h1.style.fontWeight = '900';
+  document.querySelectorAll('#heroSeg button').forEach(b=> b.classList.toggle('on', b.dataset.hero===style));
+}
+
+// ============= POPULAR PACK =============
+function setPopular(pack){
+  state.popular = pack;
+  document.querySelectorAll('.pack').forEach(p=> p.classList.toggle('popular', p.dataset.pack===pack));
+  document.querySelectorAll('#popSeg button').forEach(b=> b.classList.toggle('on', b.dataset.pop===pack));
+}
+
+// wire tweak UI
+document.querySelectorAll('#accentSeg button').forEach(b=> b.addEventListener('click',()=>{ setAccent(b.dataset.accent); persist({accent:b.dataset.accent}); }));
+document.getElementById('bannerMsg').addEventListener('input', e=>{ setBanner(e.target.value); persist({banner:e.target.value}); });
+document.querySelectorAll('#heroSeg button').forEach(b=> b.addEventListener('click',()=>{ setHero(b.dataset.hero); persist({hero:b.dataset.hero}); }));
+document.querySelectorAll('#popSeg button').forEach(b=> b.addEventListener('click',()=>{ setPopular(b.dataset.pop); persist({popular:b.dataset.pop}); }));
+
+// ============= MENU DATA =============
+const MEALS = [
+  { name:"Grilled Teriyaki Salmon", desc:"Wild salmon, jasmine rice, charred broccoli, sesame.", p:42, c:48, f:18, tag:"PROTEIN SHOT" },
+  { name:"Chipotle Steak Bowl", desc:"Grass-fed sirloin, cilantro-lime rice, black beans, pico.", p:48, c:52, f:14, tag:"HIGH PROTEIN" },
+  { name:"Herb-Roasted Chicken", desc:"Free-range chicken, sweet potato, green beans.", p:45, c:40, f:10, tag:"LEAN CUT" },
+  { name:"Thai Peanut Turkey", desc:"Ground turkey, rice noodles, peppers, peanut sauce.", p:38, c:58, f:16, tag:"CARB LOAD" },
+  { name:"Blackened Shrimp Tacos", desc:"Shrimp, corn tortillas, cabbage slaw, chipotle crema.", p:34, c:42, f:12, tag:"LIGHT" },
+  { name:"KFK Signature Bowl", desc:"Chef's rotating protein, grains, roasted veg, tahini.", p:42, c:48, f:15, tag:"CHEF'S CHOICE" }
+];
+const grid = document.getElementById('menuGrid');
+grid.innerHTML = MEALS.map(m=>`
+  <div class="meal">
+    <div class="img"><span>[ ${m.tag} ]</span></div>
+    <div class="body">
+      <div class="name">${m.name}</div>
+      <p class="desc">${m.desc}</p>
+      <div class="macros">
+        <span class="macro"><b>P</b> ${m.p}g</span>
+        <span class="macro"><b>C</b> ${m.c}g</span>
+        <span class="macro"><b>F</b> ${m.f}g</span>
+      </div>
+    </div>
+  </div>
+`).join('');
+
+// ============= INSTAGRAM GRID =============
+const IG_TILES = [
+  { tag:"BEEF BULGOGI BOWL",     a:"#3a2418", b:"#1a0d07" },
+  { tag:"GYM. EAT. WORK. REPEAT.", a:"#2b2b28", b:"#111" },
+  { tag:"GET YOUR FUEL HERE 🔥",  a:"#3f2a14", b:"#1a110a" },
+  { tag:"BUSY SEASN MEAL PREP",   a:"#1e1e24", b:"#0a0a0e" },
+  { tag:"CHEF'S CHOICE DROP",    a:"#2c2418", b:"#130f08" },
+  { tag:"TERIYAKI + VEG",         a:"#2a1f10", b:"#120c05" },
+  { tag:"TURKEY TACO BOWL",       a:"#33241a", b:"#14100a" },
+  { tag:"STACKED + SEALED",       a:"#1a1a1a", b:"#080808" },
+  { tag:"PICKUP @ GOLD'S QUARRY", a:"#2d2410", b:"#141008" },
+  { tag:"NEW WEEK · LET'S GO",    a:"#3a2a1a", b:"#16100a" },
+  { tag:"SALMON + RICE",          a:"#2a1f18", b:"#120c08" },
+  { tag:"MEAL · READY · POST RUN",a:"#241a12", b:"#0e0a07" }
+];
+document.getElementById('igGrid').innerHTML = IG_TILES.map((t,i)=>`
+  <a class="ig-tile" href="https://instagram.com/kaizenfuelkitchen" target="_blank" rel="noopener" style="--tile-a:${t.a};--tile-b:${t.b}">
+    <div class="ph"><span class="tag">${t.tag}</span></div>
+    <div class="overlay">
+      <svg class="ig-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      <span>VIEW ON INSTAGRAM</span>
+    </div>
+  </a>
+`).join('');
+
+// ============= EDIT MODE PROTOCOL =============
+window.addEventListener('message', (e)=>{
+  const d = e.data || {};
+  if(d.type === '__activate_edit_mode'){ document.getElementById('tweaks').classList.add('open'); }
+  if(d.type === '__deactivate_edit_mode'){ document.getElementById('tweaks').classList.remove('open'); }
+});
+function persist(edits){
+  try { window.parent.postMessage({type:'__edit_mode_set_keys', edits}, '*'); } catch(e){}
+}
+window.parent.postMessage({type:'__edit_mode_available'}, '*');
+
+// apply initial defaults (theme already applied above)
+setAccent(TWEAK_DEFAULTS.accent);
+setBanner(TWEAK_DEFAULTS.banner);
+setHero(TWEAK_DEFAULTS.hero);
+setPopular(TWEAK_DEFAULTS.popular);
+document.getElementById('bannerMsg').value = TWEAK_DEFAULTS.banner;
+startBannerRotation();
+</script>
+</body>
+</html>
