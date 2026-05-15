@@ -1,0 +1,23 @@
+{
+  "name": "kfk",
+  "version": "1.0.0",
+  "description": "Kaizen Fuel Kitchen - potential kfk site",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"No tests specified\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/petex47/kfk.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/petex47/kfk/issues"
+  },
+  "homepage": "https://github.com/petex47/kfk#readme",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}
